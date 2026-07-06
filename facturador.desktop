@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Facturador
+Comment=Arranca el facturador local y abre el navegador
+Exec=/home/guille/facturas/abrir-facturador.sh
+Path=/home/guille/facturas
+Terminal=false
+Categories=Office;Finance;

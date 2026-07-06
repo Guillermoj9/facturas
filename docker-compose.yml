@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  facturador:
+    build:
+      context: .
+    container_name: facturador
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      APP_NAME: Facturador
+      APP_ENV: local
+      APP_KEY: base64:Wbxhl2Q91vzBW2BBdb1tbfqpZUyAVyHZEX+1FeIkz08=
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      APP_LOCALE: es
+      APP_FALLBACK_LOCALE: en
+      APP_FAKER_LOCALE: es_ES
+      LOG_CHANNEL: stack
+      LOG_LEVEL: debug
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /var/www/html/database/database.sqlite
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+      FILESYSTEM_DISK: public
+      MAIL_MAILER: log
+      VITE_APP_NAME: Facturador
+    volumes:
+      - ./database:/var/www/html/database
+      - ./storage/app/public:/var/www/html/storage/app/public
+      - ./storage/logs:/var/www/html/storage/logs
