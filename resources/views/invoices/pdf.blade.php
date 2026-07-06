@@ -144,6 +144,10 @@
         </p>
     </div>
 
+    @if ($invoice->tax_note)
+        <div class="notes"><strong>Nota fiscal:</strong> {{ $invoice->tax_note }}</div>
+    @endif
+
     @if ($invoice->notes)
         <div class="notes">{{ $invoice->notes }}</div>
     @endif

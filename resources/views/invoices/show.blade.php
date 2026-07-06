@@ -101,6 +101,13 @@
                     <p class="text-sm text-muted">{{ $invoice->notes }}</p>
                 </div>
             @endif
+
+            @if ($invoice->tax_note)
+                <div class="card p-5">
+                    <p class="label">Nota fiscal</p>
+                    <p class="text-sm text-muted">{{ $invoice->tax_note }}</p>
+                </div>
+            @endif
         </div>
 
         <div class="space-y-5">

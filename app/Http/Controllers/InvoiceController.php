@@ -61,6 +61,7 @@ class InvoiceController extends Controller
                 'irpf_percentage' => $data['irpf_percentage'],
                 'notes' => $data['notes'] ?? null,
                 'payment_method' => $data['payment_method'] ?? null,
+                'tax_note' => $data['tax_note'] ?? null,
             ]);
 
             $this->syncItems($invoice, $data['items']);
@@ -110,6 +111,7 @@ class InvoiceController extends Controller
                 'irpf_percentage' => $data['irpf_percentage'],
                 'notes' => $data['notes'] ?? null,
                 'payment_method' => $data['payment_method'] ?? null,
+                'tax_note' => $data['tax_note'] ?? null,
             ]);
 
             $invoice->items()->delete();
@@ -204,6 +206,7 @@ class InvoiceController extends Controller
             'iva_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
             'irpf_percentage' => ['required', 'numeric', 'min:0', 'max:100'],
             'payment_method' => ['nullable', 'string', 'max:255'],
+            'tax_note' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.description' => ['required', 'string', 'max:500'],
@@ -220,6 +223,7 @@ class InvoiceController extends Controller
             'iva_percentage' => 'IVA',
             'irpf_percentage' => 'IRPF',
             'payment_method' => 'forma de pago',
+            'tax_note' => 'nota fiscal',
             'new_client.name' => 'nombre del cliente',
             'new_client.nif_cif' => 'NIF/CIF del cliente',
             'new_client.address' => 'dirección del cliente',

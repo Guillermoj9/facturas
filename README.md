@@ -10,7 +10,8 @@ Esta pensada para ejecutarse en tu ordenador con Docker. No necesitas instalar P
 - Gestion de clientes.
 - Creacion, edicion y duplicado de facturas.
 - Lineas de factura dinamicas.
-- IVA e IRPF configurables.
+- IVA e IRPF configurables, con porcentajes habituales y campo libre.
+- Opcion para marcar facturas a Canarias sin IVA y anadir nota fiscal.
 - Numeracion correlativa anual.
 - Estados de factura: borrador, enviada, pagada y vencida.
 - PDF de factura con datos fiscales, logo e IBAN.
@@ -44,7 +45,7 @@ https://www.docker.com/products/docker-desktop/
 
 ```bash
 git clone https://github.com/Guillermoj9/facturas
-cd facturador-autonomos
+cd facturas
 ```
 
 Cambia la URL anterior por la URL real de tu repositorio.

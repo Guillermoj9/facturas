@@ -12,6 +12,29 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 const euro = (value) =>
     new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(value);
 
+const syncTaxPresets = (root = document) => {
+    root.querySelectorAll('[data-tax-preset]').forEach((select) => {
+        const targetName = select.dataset.taxPreset;
+        const input = root.querySelector(`[data-tax-input="${targetName}"]`);
+        if (!input) return;
+
+        const applyPreset = () => {
+            if (select.value !== 'custom') {
+                input.value = select.value;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        };
+
+        select.addEventListener('change', applyPreset);
+        input.addEventListener('input', () => {
+            const matching = [...select.options].find((option) => option.value === input.value);
+            select.value = matching ? input.value : 'custom';
+        });
+    });
+};
+
+syncTaxPresets();
+
 /* ------------------------------------------------------------------ */
 /* Gráficos de barras (dashboard)                                      */
 /* ------------------------------------------------------------------ */
@@ -79,6 +102,9 @@ if (invoiceForm) {
     const rowsContainer = invoiceForm.querySelector('#item-rows');
     const template = document.getElementById('item-row-template');
     const addButton = invoiceForm.querySelector('#add-item');
+    const canaryTax = invoiceForm.querySelector('[data-canary-tax]');
+    const taxNote = invoiceForm.querySelector('[name="tax_note"]');
+    const canaryTaxNote = 'Operación con inversión del sujeto pasivo conforme al Art.84 de la Ley 37/1992, de 28 de diciembre, del Impuesto sobre el Valor Añadido';
 
     const renumberRows = () => {
         rowsContainer.querySelectorAll('[data-item-row]').forEach((row, index) => {
@@ -132,6 +158,31 @@ if (invoiceForm) {
     });
 
     invoiceForm.addEventListener('input', recalc);
+
+    if (canaryTax) {
+        canaryTax.addEventListener('change', () => {
+            if (!canaryTax.checked) {
+                if (taxNote?.value === canaryTaxNote) {
+                    taxNote.value = '';
+                }
+                return;
+            }
+
+            const ivaInput = invoiceForm.querySelector('[name="iva_percentage"]');
+            const ivaPreset = invoiceForm.querySelector('[data-tax-preset="iva_percentage"]');
+            if (ivaInput) {
+                ivaInput.value = '0';
+                ivaInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            if (ivaPreset) {
+                ivaPreset.value = '0';
+            }
+            if (taxNote && !taxNote.value.trim()) {
+                taxNote.value = canaryTaxNote;
+            }
+            recalc();
+        });
+    }
 
     // Cliente inline: mostrar los campos de nuevo cliente
     const clientSelect = invoiceForm.querySelector('[name="client_id"]');

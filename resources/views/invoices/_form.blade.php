@@ -2,6 +2,9 @@
     $invoice = $invoice ?? null;
     $ivaValue = old('iva_percentage', $invoice?->iva_percentage ?? $ivaDefault ?? 21);
     $irpfValue = old('irpf_percentage', $invoice?->irpf_percentage ?? $irpfDefault ?? 15);
+    $taxNoteValue = old('tax_note', $invoice?->tax_note);
+    $ivaPreset = in_array((float) $ivaValue, [21.0, 10.0, 4.0, 0.0], true) ? (string) (float) $ivaValue : 'custom';
+    $irpfPreset = in_array((float) $irpfValue, [15.0, 7.0, 0.0], true) ? (string) (float) $irpfValue : 'custom';
     $oldItems = old('items', $invoice?->items?->map(fn ($i) => [
         'description' => $i->description,
         'quantity' => (float) $i->quantity,
@@ -87,6 +90,12 @@
                 <label class="label" for="notes">Notas (aparecen al pie de la factura)</label>
                 <textarea class="field" id="notes" name="notes" rows="2">{{ old('notes', $invoice?->notes) }}</textarea>
             </div>
+            <div>
+                <label class="label" for="tax_note">Nota fiscal</label>
+                <input class="field" type="text" id="tax_note" name="tax_note"
+                       value="{{ $taxNoteValue }}"
+                       placeholder="Ej.: Operación no sujeta a IVA por reglas de localización">
+            </div>
         </div>
     </div>
 
@@ -110,16 +119,37 @@
                 <input class="field" type="date" id="due_date" name="due_date"
                        value="{{ old('due_date', $invoice?->due_date?->format('Y-m-d')) }}">
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-4">
                 <div>
-                    <label class="label" for="iva_percentage">IVA (%)</label>
+                    <label class="label" for="iva_preset">IVA</label>
+                    <select class="field mb-2" id="iva_preset" data-tax-preset="iva_percentage">
+                        <option value="21" @selected($ivaPreset === '21')>21 % — general</option>
+                        <option value="10" @selected($ivaPreset === '10')>10 % — reducido</option>
+                        <option value="4" @selected($ivaPreset === '4')>4 % — superreducido</option>
+                        <option value="0" @selected($ivaPreset === '0')>0 % — exento / no sujeto</option>
+                        <option value="custom" @selected($ivaPreset === 'custom')>Otro porcentaje</option>
+                    </select>
                     <input class="field" type="number" step="0.01" min="0" max="100" id="iva_percentage" name="iva_percentage" required
-                           value="{{ $ivaValue }}">
+                           value="{{ $ivaValue }}" data-tax-input="iva_percentage">
                 </div>
+                <label class="flex items-start gap-3 rounded-lg border border-edge bg-base p-3 text-sm text-muted">
+                    <input type="checkbox" class="mt-1 h-4 w-4 rounded border-edge bg-base accent-accent"
+                           data-canary-tax @checked((float) $ivaValue === 0.0 && str_contains(strtolower((string) $taxNoteValue), 'canarias'))>
+                    <span>
+                        <span class="block font-medium text-ink">Factura a Canarias / sin IVA</span>
+                        <span class="block text-xs">Pone el IVA al 0 % y añade una nota fiscal editable.</span>
+                    </span>
+                </label>
                 <div>
-                    <label class="label" for="irpf_percentage">IRPF (%)</label>
+                    <label class="label" for="irpf_preset">IRPF</label>
+                    <select class="field mb-2" id="irpf_preset" data-tax-preset="irpf_percentage">
+                        <option value="15" @selected($irpfPreset === '15')>15 % — general profesional</option>
+                        <option value="7" @selected($irpfPreset === '7')>7 % — nuevos autónomos</option>
+                        <option value="0" @selected($irpfPreset === '0')>0 % — sin retención</option>
+                        <option value="custom" @selected($irpfPreset === 'custom')>Otro porcentaje</option>
+                    </select>
                     <input class="field" type="number" step="0.01" min="0" max="100" id="irpf_percentage" name="irpf_percentage" required
-                           value="{{ $irpfValue }}">
+                           value="{{ $irpfValue }}" data-tax-input="irpf_percentage">
                 </div>
             </div>
         </div>

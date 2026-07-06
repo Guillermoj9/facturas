@@ -1,4 +1,6 @@
-@php($client = $client ?? null)
+@php
+    $client = $client ?? null;
+@endphp
 
 <div class="grid gap-4 md:grid-cols-2">
     <div>

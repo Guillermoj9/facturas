@@ -1,4 +1,6 @@
-@php($expense = $expense ?? null)
+@php
+    $expense = $expense ?? null;
+@endphp
 
 <div>
     <label class="label" for="description">Descripción *</label>

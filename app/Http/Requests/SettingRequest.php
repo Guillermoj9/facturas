@@ -19,7 +19,7 @@ class SettingRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:255'],
             'iban' => ['nullable', 'string', 'max:40'],
             'logo' => ['nullable', 'image', 'max:2048'],
-            'irpf_default' => ['required', 'in:7,15'],
+            'irpf_default' => ['required', 'numeric', 'min:0', 'max:100'],
             'iva_default' => ['required', 'numeric', 'min:0', 'max:100'],
             'invoice_prefix' => ['nullable', 'string', 'max:10'],
         ];

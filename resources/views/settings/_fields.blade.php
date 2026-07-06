@@ -1,4 +1,10 @@
-@php($setting = $setting ?? null)
+@php
+    $setting = $setting ?? null;
+    $ivaDefaultValue = old('iva_default', $setting?->iva_default ?? 21);
+    $irpfDefaultValue = old('irpf_default', $setting?->irpf_default ?? 15);
+    $ivaDefaultPreset = in_array((float) $ivaDefaultValue, [21.0, 10.0, 4.0, 0.0], true) ? (string) (float) $ivaDefaultValue : 'custom';
+    $irpfDefaultPreset = in_array((float) $irpfDefaultValue, [15.0, 7.0, 0.0], true) ? (string) (float) $irpfDefaultValue : 'custom';
+@endphp
 
 <div class="grid gap-4 md:grid-cols-2">
     <div>
@@ -58,16 +64,27 @@
 
 <div class="grid gap-4 md:grid-cols-3">
     <div>
-        <label class="label" for="irpf_default">Retención de IRPF *</label>
-        <select class="field" id="irpf_default" name="irpf_default" required>
-            <option value="7" @selected(old('irpf_default', $setting?->irpf_default ?? 15) == 7)>7 % — nuevos autónomos (&lt; 3 años)</option>
-            <option value="15" @selected(old('irpf_default', $setting?->irpf_default ?? 15) == 15)>15 % — general</option>
+        <label class="label" for="irpf_default_preset">IRPF por defecto *</label>
+        <select class="field mb-2" id="irpf_default_preset" data-tax-preset="irpf_default">
+            <option value="15" @selected($irpfDefaultPreset === '15')>15 % — general profesional</option>
+            <option value="7" @selected($irpfDefaultPreset === '7')>7 % — nuevos autónomos</option>
+            <option value="0" @selected($irpfDefaultPreset === '0')>0 % — sin retención</option>
+            <option value="custom" @selected($irpfDefaultPreset === 'custom')>Otro porcentaje</option>
         </select>
+        <input class="field" type="number" step="0.01" min="0" max="100" id="irpf_default" name="irpf_default" required
+               value="{{ $irpfDefaultValue }}" data-tax-input="irpf_default">
     </div>
     <div>
-        <label class="label" for="iva_default">IVA por defecto (%) *</label>
+        <label class="label" for="iva_default_preset">IVA por defecto *</label>
+        <select class="field mb-2" id="iva_default_preset" data-tax-preset="iva_default">
+            <option value="21" @selected($ivaDefaultPreset === '21')>21 % — general</option>
+            <option value="10" @selected($ivaDefaultPreset === '10')>10 % — reducido</option>
+            <option value="4" @selected($ivaDefaultPreset === '4')>4 % — superreducido</option>
+            <option value="0" @selected($ivaDefaultPreset === '0')>0 % — exento / no sujeto</option>
+            <option value="custom" @selected($ivaDefaultPreset === 'custom')>Otro porcentaje</option>
+        </select>
         <input class="field" type="number" step="0.01" min="0" max="100" id="iva_default" name="iva_default" required
-               value="{{ old('iva_default', $setting?->iva_default ?? 21) }}">
+               value="{{ $ivaDefaultValue }}" data-tax-input="iva_default">
     </div>
     <div>
         <label class="label" for="invoice_prefix">Prefijo de facturas</label>
