@@ -43,7 +43,7 @@ https://www.docker.com/products/docker-desktop/
 ### 2. Descarga el proyecto
 
 ```bash
-git clone https://github.com/tuusuario/facturador-autonomos.git
+git clone https://github.com/Guillermoj9/facturas
 cd facturador-autonomos
 ```
 
